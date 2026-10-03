@@ -4,37 +4,135 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AVI Air Booking</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f7fa;
+    }
+
+    .box {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #004c99;
+    }
+
+    #results {
+      margin-top: 25px;
+    }
+
+    .flight {
+      background: #eef6ff;
+      padding: 15px;
+      margin-top: 12px;
+      border-radius: 8px;
+    }
+
+    .book {
+      background: #198754;
+      margin-top: 10px;
+    }
+  </style>
 </head>
+
 <body>
 
-  <h1>AVI Air</h1>
-  <p>Book your flight with AVI Air</p>
+  <div class="box">
+    <h1>AVI Air</h1>
+    <p>Book your flight with AVI Air</p>
 
-  <h2>Flight Booking</h2>
+    <h2>Flight Booking</h2>
 
-  <form>
-    <label>From:</label>
-    <input type="text" placeholder="Departure airport">
+    <form id="flightForm">
 
-    <br><br>
+      <label>From:</label>
+      <input id="from" type="text" placeholder="Departure airport" required>
 
-    <label>To:</label>
-    <input type="text" placeholder="Destination airport">
+      <label>To:</label>
+      <input id="to" type="text" placeholder="Destination airport" required>
 
-    <br><br>
+      <label>Departure Date:</label>
+      <input id="date" type="date" required>
 
-    <label>Departure Date:</label>
-    <input type="date">
+      <label>Passengers:</label>
+      <input id="passengers" type="number" min="1" value="1" required>
 
-    <br><br>
+      <button type="submit">Search Flights</button>
 
-    <label>Passengers:</label>
-    <input type="number" min="1" value="1">
+    </form>
 
-    <br><br>
+    <div id="results"></div>
+  </div>
 
-    <button type="submit">Search Flights</button>
-  </form>
+  <script>
+    document.getElementById("flightForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const from = document.getElementById("from").value;
+      const to = document.getElementById("to").value;
+      const date = document.getElementById("date").value;
+      const passengers = document.getElementById("passengers").value;
+
+      const results = document.getElementById("results");
+
+      results.innerHTML = `
+        <h2>Available Flights</h2>
+
+        <div class="flight">
+          <h3>AVI Air - Flight AV101</h3>
+          <p><strong>Route:</strong> ${from} → ${to}</p>
+          <p><strong>Date:</strong> ${date}</p>
+          <p><strong>Departure:</strong> 08:00 AM</p>
+          <p><strong>Arrival:</strong> 10:00 AM</p>
+          <p><strong>Passengers:</strong> ${passengers}</p>
+          <p><strong>Price:</strong> $120 per passenger</p>
+          <button class="book" onclick="alert('Booking selected for AVI Air AV101')">
+            Book Flight
+          </button>
+        </div>
+
+        <div class="flight">
+          <h3>AVI Air - Flight AV205</h3>
+          <p><strong>Route:</strong> ${from} → ${to}</p>
+          <p><strong>Date:</strong> ${date}</p>
+          <p><strong>Departure:</strong> 02:30 PM</p>
+          <p><strong>Arrival:</strong> 04:30 PM</p>
+          <p><strong>Passengers:</strong> ${passengers}</p>
+          <p><strong>Price:</strong> $145 per passenger</p>
+          <button class="book" onclick="alert('Booking selected for AVI Air AV205')">
+            Book Flight
+          </button>
+        </div>
+      `;
+    });
+  </script>
 
 </body>
 </html>
