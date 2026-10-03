@@ -27,6 +27,8 @@
       margin-top: 6px;
       margin-bottom: 15px;
       box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
 
     button {
@@ -59,40 +61,79 @@
       background: #198754;
       margin-top: 10px;
     }
+
+    .confirmation {
+      margin-top: 25px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+
+    .success {
+      margin-top: 25px;
+      padding: 20px;
+      background: #e8f7ee;
+      border: 1px solid #198754;
+      border-radius: 10px;
+    }
+
+    .success h2 {
+      color: #198754;
+    }
+
+    .back {
+      background: #6c757d;
+      margin-top: 10px;
+    }
   </style>
 </head>
 
 <body>
 
   <div class="box">
+
     <h1>AVI Air</h1>
     <p>Book your flight with AVI Air</p>
 
-    <h2>Flight Booking</h2>
+    <div id="bookingSection">
 
-    <form id="flightForm">
+      <h2>Flight Booking</h2>
 
-      <label>From:</label>
-      <input id="from" type="text" placeholder="Departure airport" required>
+      <form id="flightForm">
 
-      <label>To:</label>
-      <input id="to" type="text" placeholder="Destination airport" required>
+        <label>From:</label>
+        <input id="from" type="text" placeholder="Departure airport" required>
 
-      <label>Departure Date:</label>
-      <input id="date" type="date" required>
+        <label>To:</label>
+        <input id="to" type="text" placeholder="Destination airport" required>
 
-      <label>Passengers:</label>
-      <input id="passengers" type="number" min="1" value="1" required>
+        <label>Departure Date:</label>
+        <input id="date" type="date" required>
 
-      <button type="submit">Search Flights</button>
+        <label>Passengers:</label>
+        <input id="passengers" type="number" min="1" value="1" required>
 
-    </form>
+        <button type="submit">Search Flights</button>
 
-    <div id="results"></div>
+      </form>
+
+      <div id="results"></div>
+
+    </div>
+
+    <div id="passengerSection" style="display:none;"></div>
+
+    <div id="confirmationSection" style="display:none;"></div>
+
   </div>
 
   <script>
+
+    let selectedFlight = {};
+
     document.getElementById("flightForm").addEventListener("submit", function(event) {
+
       event.preventDefault();
 
       const from = document.getElementById("from").value;
@@ -113,7 +154,9 @@
           <p><strong>Arrival:</strong> 10:00 AM</p>
           <p><strong>Passengers:</strong> ${passengers}</p>
           <p><strong>Price:</strong> $120 per passenger</p>
-          <button class="book" onclick="alert('Booking selected for AVI Air AV101')">
+
+          <button class="book"
+            onclick="selectFlight('AV101','08:00 AM','10:00 AM',120)">
             Book Flight
           </button>
         </div>
@@ -126,12 +169,178 @@
           <p><strong>Arrival:</strong> 04:30 PM</p>
           <p><strong>Passengers:</strong> ${passengers}</p>
           <p><strong>Price:</strong> $145 per passenger</p>
-          <button class="book" onclick="alert('Booking selected for AVI Air AV205')">
+
+          <button class="book"
+            onclick="selectFlight('AV205','02:30 PM','04:30 PM',145)">
             Book Flight
           </button>
         </div>
       `;
     });
+
+
+    function selectFlight(flightNumber, departure, arrival, price) {
+
+      selectedFlight = {
+        flightNumber: flightNumber,
+        departure: departure,
+        arrival: arrival,
+        price: price,
+        from: document.getElementById("from").value,
+        to: document.getElementById("to").value,
+        date: document.getElementById("date").value,
+        passengers: document.getElementById("passengers").value
+      };
+
+      document.getElementById("bookingSection").style.display = "none";
+
+      const passengerSection = document.getElementById("passengerSection");
+
+      passengerSection.style.display = "block";
+
+      passengerSection.innerHTML = `
+
+        <div class="confirmation">
+
+          <h2>Passenger Details</h2>
+
+          <p><strong>Flight:</strong> AVI Air ${flightNumber}</p>
+          <p><strong>Route:</strong> ${selectedFlight.from} → ${selectedFlight.to}</p>
+          <p><strong>Date:</strong> ${selectedFlight.date}</p>
+          <p><strong>Departure:</strong> ${departure}</p>
+          <p><strong>Arrival:</strong> ${arrival}</p>
+
+          <hr>
+
+          <label>Passenger Full Name:</label>
+          <input id="passengerName" type="text"
+                 placeholder="Enter passenger full name" required>
+
+          <label>Email Address:</label>
+          <input id="passengerEmail" type="email"
+                 placeholder="Enter email address" required>
+
+          <label>Phone Number:</label>
+          <input id="passengerPhone" type="tel"
+                 placeholder="Enter phone number" required>
+
+          <button onclick="confirmBooking()">
+            Confirm Booking
+          </button>
+
+          <button class="back" onclick="goBack()">
+            Back to Flights
+          </button>
+
+        </div>
+      `;
+    }
+
+
+    function confirmBooking() {
+
+      const name = document.getElementById("passengerName").value;
+      const email = document.getElementById("passengerEmail").value;
+      const phone = document.getElementById("passengerPhone").value;
+
+      if (!name || !email || !phone) {
+        alert("Please complete all passenger details.");
+        return;
+      }
+
+      const bookingReference =
+        "AVI" + Math.floor(100000 + Math.random() * 900000);
+
+      const total =
+        selectedFlight.price * Number(selectedFlight.passengers);
+
+      document.getElementById("passengerSection").style.display = "none";
+
+      const confirmation =
+        document.getElementById("confirmationSection");
+
+      confirmation.style.display = "block";
+
+      confirmation.innerHTML = `
+
+        <div class="success">
+
+          <h2>Booking Confirmed!</h2>
+
+          <p>Your AVI Air booking has been confirmed.</p>
+
+          <hr>
+
+          <p><strong>Booking Reference:</strong> ${bookingReference}</p>
+
+          <p><strong>Passenger:</strong> ${name}</p>
+
+          <p><strong>Email:</strong> ${email}</p>
+
+          <p><strong>Phone:</strong> ${phone}</p>
+
+          <p><strong>Flight:</strong>
+            AVI Air ${selectedFlight.flightNumber}
+          </p>
+
+          <p><strong>Route:</strong>
+            ${selectedFlight.from} → ${selectedFlight.to}
+          </p>
+
+          <p><strong>Date:</strong>
+            ${selectedFlight.date}
+          </p>
+
+          <p><strong>Departure:</strong>
+            ${selectedFlight.departure}
+          </p>
+
+          <p><strong>Arrival:</strong>
+            ${selectedFlight.arrival}
+          </p>
+
+          <p><strong>Passengers:</strong>
+            ${selectedFlight.passengers}
+          </p>
+
+          <p><strong>Total Price:</strong>
+            $${total}
+          </p>
+
+          <hr>
+
+          <p>
+            Please keep your booking reference for future use.
+          </p>
+
+          <button class="back" onclick="newBooking()">
+            Make Another Booking
+          </button>
+
+        </div>
+      `;
+    }
+
+
+    function goBack() {
+
+      document.getElementById("passengerSection").style.display = "none";
+
+      document.getElementById("bookingSection").style.display = "block";
+    }
+
+
+    function newBooking() {
+
+      document.getElementById("confirmationSection").style.display = "none";
+
+      document.getElementById("bookingSection").style.display = "block";
+
+      document.getElementById("flightForm").reset();
+
+      document.getElementById("results").innerHTML = "";
+    }
+
   </script>
 
 </body>
